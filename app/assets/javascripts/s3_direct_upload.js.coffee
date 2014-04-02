@@ -79,12 +79,14 @@ $.fn.S3Uploader = (options) ->
             complete:   ( xhr, status )         -> $uploadForm.trigger( 'ajax:complete', [xhr, status] )
             success:    ( data, status, xhr )   ->
               context_div_id = 'upload_' + file.unique_id
+              $( "#" + context_div_id + " h5" ).addClass( "success");
               $( "#" + context_div_id + " .progress-bar" ).switchClass( "progress-bar-info", "progress-bar-success");
               $( "#" + context_div_id ).append( '<div class="alert alert-success">
                                 <strong>Ok!</strong> Successfully uploaded.</div>' );
               $uploadForm.trigger( 'ajax:success', [data, status, xhr] )
             error:      ( xhr, status, error )  ->
               context_div_id = 'upload_' + file.unique_id
+              $( "#" + context_div_id + " h5" ).addClass( "error");
               $( "#" + context_div_id + " .progress-bar" ).switchClass( "progress-bar-info", "progress-bar-danger");
               $( "#" + context_div_id ).append( '<div class="alert alert-danger">
                                 <strong>Oh snap!</strong> Change a few things up and try submitting again.</div>' );
