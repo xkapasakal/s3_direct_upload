@@ -77,9 +77,17 @@ $.fn.S3Uploader = (options) ->
             data: content
             beforeSend: ( xhr, settings )       -> $uploadForm.trigger( 'ajax:beforeSend', [xhr, settings] )
             complete:   ( xhr, status )         -> $uploadForm.trigger( 'ajax:complete', [xhr, status] )
-            success:    ( data, status, xhr )   -> $uploadForm.trigger( 'ajax:success', [data, status, xhr] )
+            success:    ( data, status, xhr )   ->
+              context_div_id = 'upload_' + file.unique_id
+              $( "#" + context_div_id + " .progress-bar" ).switchClass( "progress-bar-info", "progress-bar-success");
+              $( "#" + context_div_id ).append( '<div class="alert alert-success">
+                                <strong>Ok!</strong> Successfully uploaded.</div>' );
+              $uploadForm.trigger( 'ajax:success', [data, status, xhr] )
             error:      ( xhr, status, error )  ->
-              xhr.unique_id = file.unique_id
+              context_div_id = 'upload_' + file.unique_id
+              $( "#" + context_div_id + " .progress-bar" ).switchClass( "progress-bar-info", "progress-bar-danger");
+              $( "#" + context_div_id ).append( '<div class="alert alert-danger">
+                                <strong>Oh snap!</strong> Change a few things up and try submitting again.</div>' );
               $uploadForm.trigger( 'ajax:error', [xhr, status, error] )
 
         data.context.remove() if data.context && settings.remove_completed_progress_bar # remove progress bar
