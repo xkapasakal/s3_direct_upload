@@ -34,7 +34,6 @@ $.fn.S3Uploader = (options) ->
       false
 
   setUploadForm = ->
-    file = null
     $uploadForm.fileupload
 
       add: (e, data) ->
@@ -78,18 +77,18 @@ $.fn.S3Uploader = (options) ->
             beforeSend: ( xhr, settings )       -> $uploadForm.trigger( 'ajax:beforeSend', [xhr, settings] )
             complete:   ( xhr, status )         -> $uploadForm.trigger( 'ajax:complete', [xhr, status] )
             success:    ( data, status, xhr )   ->
-              context_div_id = 'upload_' + file.unique_id
+              context_div_id = 'upload_' + data.unique_id
               $( "#" + context_div_id + " h5" ).addClass( "success");
               $( "#" + context_div_id + " .progress-bar" ).switchClass( "progress-bar-info", "progress-bar-success");
               $( "#" + context_div_id ).append( '<div class="alert alert-success">
-                                <strong>Ok!</strong> Successfully uploaded.</div>' );
+                                              <strong>Ok!</strong> Successfully uploaded.</div>' );
               $uploadForm.trigger( 'ajax:success', [data, status, xhr] )
             error:      ( xhr, status, error )  ->
-              context_div_id = 'upload_' + file.unique_id
+              context_div_id = 'upload_' + xhr.responseJSON.unique_id
               $( "#" + context_div_id + " h5" ).addClass( "error");
               $( "#" + context_div_id + " .progress-bar" ).switchClass( "progress-bar-info", "progress-bar-danger");
               $( "#" + context_div_id ).append( '<div class="alert alert-danger">
-                                <strong>Oh snap!</strong> Change a few things up and try submitting again.</div>' );
+                                              <strong>Oh snap!</strong> Change a few things up and try submitting again.</div>' );
               $uploadForm.trigger( 'ajax:error', [xhr, status, error] )
 
         data.context.remove() if data.context && settings.remove_completed_progress_bar # remove progress bar
@@ -145,6 +144,8 @@ $.fn.S3Uploader = (options) ->
     content.filetype         = file.type if 'type' of file
     content.unique_id        = file.unique_id if 'unique_id' of file
     content.relativePath     = build_relativePath(file) if has_relativePath(file)
+    if settings.additional_data
+      settings.additional_data.div_id = file.unique_id
     content = $.extend content, settings.additional_data if settings.additional_data
     content
 
